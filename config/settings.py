@@ -48,6 +48,8 @@ if not SECRET_KEY:
         "nusxalang (unda DJANGO_DEBUG=1). Serverda: .env ga DJANGO_SECRET_KEY yozing.")
 
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
+# Server ichidagi tekshiruvlar (Docker healthcheck, deploy.sh, o'rnatish skripti) 127.0.0.1 orqali keladi
+ALLOWED_HOSTS += [h for h in ("localhost", "127.0.0.1") if h not in ALLOWED_HOSTS]
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS", "")
 ADMIN_URL = env("DJANGO_ADMIN_URL", "boshqaruv/").strip("/") + "/"
 APP_VERSION = env("APP_VERSION", "1.2.0")
