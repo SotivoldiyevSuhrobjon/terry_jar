@@ -154,6 +154,28 @@ Qo'lda o'rnatish: `cd /opt/terry_jar && ./scripts/deploy.sh`.
   (crontab -l; echo "0 4 * * 0 rclone copy /opt/terry_jar/backups gdrive:terry_backups --max-age 8d") | crontab -
   ```
 
+## 7B. Telegram'ga zaxira (tavsiya etiladi)
+
+Server butunlay buzilsa ham ma'lumot qolishi uchun har kechagi nusxa Telegram'ga ham yuboriladi (parol bilan shifrlangan).
+
+1. Telegram'da **@BotFather** → `/newbot` → token oling.
+2. **Yopiq kanal** (yoki guruh) yarating, botni unga **admin** qilib qo'shing va kanalga bitta xabar yozing.
+3. Kanal ID sini oling: brauzerda `https://api.telegram.org/bot<TOKEN>/getUpdates` → `"chat":{"id":-100...}`.
+4. Serverda `.env` ga qo'shing:
+   ```
+   TELEGRAM_BACKUP_BOT_TOKEN=123456:ABC...
+   TELEGRAM_BACKUP_CHAT_ID=-1001234567890
+   BACKUP_PASSPHRASE=uzun-maxfiy-ibora     # YO'QOTMANG — usiz zaxirani ochib bo'lmaydi
+   ```
+5. Qo'llash va sinash:
+   ```bash
+   docker compose up -d backup
+   docker compose run --rm --entrypoint sh backup /backup.sh once    # kanalga darhol nusxa keladi
+   ```
+
+Fayl 47 MB dan katta bo'lsa bo'laklarga bo'linib yuboriladi (`cat *.part-* > fayl` bilan birlashtiriladi).
+Telegram'dan olingan `.enc` faylni tiklash: `./scripts/restore.sh terry_SANA.sql.gz.enc` (parol so'raladi).
+
 ## 8. Kuzatish
 
 - Holat: `docker compose ps`, loglar: `docker compose logs -f web` (nginx: `... logs -f nginx`).

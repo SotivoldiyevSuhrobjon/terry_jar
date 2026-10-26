@@ -31,6 +31,7 @@ nginx (SSL, statik fayllar, limitlar) ──► Django 5.2 + Channels (uvicorn, 
 - **Ruxsatlar serverda tekshiriladi:** faqat-ko'rish xodimi (katta boshliq) hech narsani o'zgartira olmaydi;
   xodimlar, filiallar, bo'lim ruxsatlari faqat tegishli huquq bilan; o'zidan yuqori lavozim berib bo'lmaydi.
 - **Audit:** kim, qachon, nimani, oldin va keyin qanday edi — hammasi `AuditLog` da (admin panelda).
+- **Zaxira:** har kecha 02:30 da serverga (14 kun) va xohlasangiz **Telegram yopiq kanaliga shifrlangan** holda (DEPLOY.md 7B).
 - Parollar faqat hash ko'rinishida (PBKDF2). 5 marta xato parol → 15 daqiqa blok (django-axes).
 - **Ilova sifatida o'rnatish (PWA):** Chrome/Edge'da manzil satrida «O'rnatish» belgisi va sahifada «📲 Ilovani o'rnatish»
   tugmasi; Android'da «Bosh ekranga qo'shish»; iPhone'da Safari → «Ulashish» → «На экран Домой». O'rnatilgan ilova

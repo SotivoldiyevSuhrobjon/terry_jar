@@ -87,6 +87,9 @@ services:
       PGPASSWORD: ${POSTGRES_PASSWORD}
       PGDATABASE: ${POSTGRES_DB:-terry}
       KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BACKUP_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_BACKUP_CHAT_ID:-}
+      BACKUP_PASSPHRASE: ${BACKUP_PASSPHRASE:-}
       TZ: Asia/Tashkent
     volumes:
       - ./backups:/backups

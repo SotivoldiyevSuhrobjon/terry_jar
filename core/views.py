@@ -76,7 +76,8 @@ def app_view(request):
         "csrf": get_token(request), "desc": sync.DESC_COLS, "local": sorted(sync.LOCAL_ONLY),
         "api": "/api/sync/", "ws": "/ws/sync/", "logout": reverse("logout"), "login": reverse("login"),
         "pw": reverse("password_change"), "ro": user.readonly, "name": user.full_name,
-        "debug": settings.DEBUG, "role": user.role, "br": user.branch, "fresh": not request.session.get("tj_in"),
+        "debug": settings.DEBUG, "release": settings.APP_RELEASE, "role": user.role, "br": user.branch,
+        "fresh": not request.session.get("tj_in"),
         "version": settings.APP_VERSION,
     }
     request.session["tj_in"] = 1
@@ -86,7 +87,7 @@ def app_view(request):
 def _front_page(f, boot, status=200):
     """Demo HTML + ulanish skriptlari (boot.js oldidan, sync.js oxirida)."""
     static = settings.STATIC_URL
-    ver = settings.APP_VERSION
+    ver = f"{settings.APP_RELEASE}-{settings.APP_VERSION}"
     head_inject = (f'\n{PWA_HEAD}'
                    f'\n<script>window.TJ_BOOT={_json_script(boot)};</script>'
                    f'\n<script src="{static}tj/boot.js?v={ver}"></script>\n')
@@ -128,7 +129,8 @@ def manifest(request):
 
 def service_worker(request):
     js = (settings.BASE_DIR / "core" / "static" / "tj" / "sw.js").read_text(encoding="utf-8")
-    resp = HttpResponse(js.replace("__VERSION__", settings.APP_VERSION), content_type="application/javascript")
+    resp = HttpResponse(js.replace("__VERSION__", f"{settings.APP_RELEASE}-{settings.APP_VERSION}"),
+                        content_type="application/javascript")
     resp["Service-Worker-Allowed"] = "/"
     resp["Cache-Control"] = "no-cache"
     return resp
@@ -190,16 +192,12 @@ def healthz(request):
             c.execute("SELECT 1")
     except Exception:
         return JsonResponse({"ok": False}, status=503)
-    return JsonResponse({"ok": True, "version": settings.APP_VERSION})
+    return JsonResponse({"ok": True, "release": settings.APP_RELEASE, "build": settings.APP_VERSION})
 
 
 # ---------------------------------------------------------------- auth pages
 def version_label() -> str:
-    try:
-        app = _Front.load().appver
-    except OSError:
-        app = ""
-    return (f"ilova {app} · " if app else "") + f"server {settings.APP_VERSION}"
+    return f"{settings.APP_RELEASE}"
 
 
 class LoginView(auth_views.LoginView):
@@ -222,7 +220,7 @@ class LoginView(auth_views.LoginView):
             "action": self.request.get_full_path(), "next": self.get_redirect_url() or reverse("app"),
             "error": bool(form is not None and form.errors),
             "username": (form.data.get("username", "") if form is not None and form.is_bound else "")[:150],
-            "version": settings.APP_VERSION,
+            "version": settings.APP_VERSION, "release": settings.APP_RELEASE,
         }
         return _front_page(f, boot, status=200)
 

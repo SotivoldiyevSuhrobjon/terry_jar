@@ -52,7 +52,8 @@ ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 ALLOWED_HOSTS += [h for h in ("localhost", "127.0.0.1") if h not in ALLOWED_HOSTS]
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS", "")
 ADMIN_URL = env("DJANGO_ADMIN_URL", "boshqaruv/").strip("/") + "/"
-APP_VERSION = env("APP_VERSION", "1.2.0")
+APP_RELEASE = "1.0.0"  # foydalanuvchilarga ko'rinadigan versiya
+APP_VERSION = env("APP_VERSION", "dev")  # build: deploy.sh git commit kodini qo'yadi (texnik)
 
 INSTALLED_APPS = [
     "django.contrib.admin",

@@ -147,12 +147,12 @@
       if (!(a && /INPUT|TEXTAREA|SELECT/.test(a.tagName))) render();
     }
   }
-  function pillRefresh() { var el = document.querySelector('.net'); if (el) { try { el.outerHTML = netPill(); } catch (e) {} } }
+  function pillRefresh() { var el = document.querySelector('.net'); if (el) { try { el.outerHTML = netPill(); } catch (e) {} } try { nagRefresh(); } catch (e) {} }
   function syncSim() { ui.simOff = TJ.down || TJ.userSim; }
   // Offline bo'lganda sahifa tepasida doim ko'rinadigan aniq ogohlantirish
   function barRefresh() {
     var bar = document.getElementById('tjBar'), off = isOff(), q = queueCount();
-    if (!off) { if (bar) bar.remove(); document.body.classList.remove('tj-off'); return; }
+    if (!off) { if (bar) bar.remove(); document.body.classList.remove('tj-off'); try { nagRefresh(); } catch (e) {} return; }
     if (!bar) {
       bar = document.createElement('div'); bar.id = 'tjBar'; bar.setAttribute('role', 'status');
       bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:95;background:#b42318;color:#fff;font:600 13.5px/1.35 system-ui,sans-serif;padding:8px 14px;text-align:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)';
@@ -163,6 +163,7 @@
     bar.textContent = (TJ.userSim ? 'OFLAYN SINOV — ' : 'INTERNET / SERVER ALOQASI YO\'Q — ') +
       'ishlashda davom eting: kiritganlar shu kompyuterda saqlanmoqda' + (q ? ' (' + q + ' ta o\'zgarish navbatda)' : '') +
       ', aloqa tiklanganda o\'zi yuboriladi.';
+    try { nagRefresh(); topLayout(); } catch (e) {}
   }
   function offline() { return !navigator.onLine || TJ.userSim; }
 
@@ -470,6 +471,32 @@
       return writeCsv(day, L);
     });
   }
+  /* ish boshida papka ulanmagan bo'lsa — tepada sariq eslatma (perixod, rasxod, sklad) */
+  var NAG_ROLES = { perixod: 1, rasxod: 1, sklad: 1 };
+  TJ.nagLater = function () { TJ.nagUntil = Date.now() + 3600e3; nagRefresh(); setTimeout(nagRefresh, 3600e3 + 1000); };
+  function nagRefresh() {
+    var el = document.getElementById('tjNag');
+    var need = NAG_ROLES[B.role] && FS.supported && FS.checked && !FS.ok && !(TJ.nagUntil > Date.now());
+    if (!need) { if (el) el.remove(); document.body.classList.remove('tj-nag'); topLayout(); return; }
+    if (!el) {
+      el = document.createElement('div'); el.id = 'tjNag'; el.setAttribute('role', 'alert');
+      el.style.cssText = 'position:fixed;left:0;right:0;z-index:94;background:#fff4ce;color:#5c4400;border-bottom:1px solid #e9c46a;font:600 13.5px/1.35 system-ui,sans-serif;padding:7px 14px;display:flex;gap:8px 12px;align-items:center;justify-content:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.12)';
+      document.body.appendChild(el);
+    }
+    el.innerHTML = '<span>📁 ' + (FS.need ? 'Papkaga ruxsat bering (bir bosish)' : 'Ish boshlashdan oldin papkani ulang') +
+      ' — internet uzilsa ham ma\'lumot yo\'qolmasligi uchun.</span>' +
+      '<button type="button" style="all:unset;cursor:pointer;background:#1b2190;color:#fff;border-radius:8px;padding:6px 12px" onclick="' + (FS.need ? 'TJ.fsGrant()' : 'TJ.fsPick()') + '">' + (FS.need ? 'Ruxsat berish' : 'Papkani ulash') + '</button>' +
+      '<button type="button" style="all:unset;cursor:pointer;padding:6px 8px;opacity:.8;text-decoration:underline" onclick="TJ.nagLater()">Keyinroq</button>';
+    document.body.classList.add('tj-nag');
+    topLayout();
+  }
+  // qizil (offline) va sariq (papka) yozuvlar balandligiga qarab sahifa pastga suriladi
+  function topLayout() {
+    var b = document.getElementById('tjBar'), n = document.getElementById('tjNag'), hb = b ? b.offsetHeight : 0;
+    if (n) n.style.top = hb + 'px';
+    document.documentElement.style.setProperty('--tjTop', (hb + (n ? n.offsetHeight : 0)) + 'px');
+  }
+  window.addEventListener('resize', function () { try { topLayout(); } catch (e) {} });
   function fsReady(h) { FS.h = h; FS.name = h.name; FS.ok = true; FS.need = false; FS.err = ''; fsInitFolder().catch(fsFail); fsSyncPending(); pillRefresh(); panelRefresh(); }
   TJ.fsPick = function () {
     if (!FS.supported) return;
@@ -529,7 +556,7 @@
       if (!h) return;
       FS.h = h; FS.name = h.name;
       return h.queryPermission({ mode: 'readwrite' }).then(function (p) { if (p === 'granted') fsReady(h); else { FS.need = true; pillRefresh(); } });
-    }).catch(function (e) { console.warn('[tj fs init]', e); });
+    }).catch(function (e) { console.warn('[tj fs init]', e); }).then(function () { FS.checked = true; nagRefresh(); });
   }
 
   /* ---------- ishga tushirish ---------- */
@@ -541,7 +568,7 @@
   }
   syncSim();
   fsInit();
-  (function () { var st = document.createElement('style'); st.textContent = 'body.tj-off{padding-top:40px}body.tj-off .side,body.tj-off aside.nav{top:40px}'; document.head.appendChild(st); })();
+  (function () { var st = document.createElement('style'); st.textContent = 'body.tj-off,body.tj-nag{padding-top:var(--tjTop,0)}body.tj-off .side,body.tj-nag .side{top:var(--tjTop,0)}'; document.head.appendChild(st); })();
   setTimeout(barRefresh, 0);
   if (B.fresh && typeof me !== 'undefined' && me) { try { logA('Tizimga kirdi'); checkAll(); save(); render(); } catch (e) {} }
   connectWS();
@@ -566,7 +593,8 @@
         '<button class="btn p" style="justify-content:center;padding:11px">Kirish</button>' +
         '<div class="m" style="font-size:12px">Parolni unutsangiz administratorga murojaat qiling. 5 marta xato kiritilsa, kirish 15 daqiqaga bloklanadi.</div>' +
         '</form>' +
-        '<button class="btn ghost" style="color:#fff;align-self:flex-start" onclick="ui.modal={k:\'about\'};renderLogin()">' + ic('info') + ' Dastur haqida</button>' +
+        '<div class="row" style="gap:4px;flex-wrap:wrap"><button class="btn ghost" style="color:#fff" onclick="ui.modal={k:\'about\'};renderLogin()">' + ic('info') + ' Dastur haqida</button>' +
+        (typeof helpModal === 'function' ? '<button class="btn ghost" style="color:#fff" onclick="ui.modal={k:\'help\'};ui.hs=\'all\';renderLogin()">' + ic('book') + ' Qo\'llanma</button>' : '') + '</div>' +
         '</div><div></div></div>' + (ui.modal ? modalHTML() : '');
       try { mount3D('login', document.getElementById('loginCanvas'), { rolls: 7, cotton: 6 }); } catch (x) {}
       var h = document.getElementById('tjHide'); if (h) h.remove();
