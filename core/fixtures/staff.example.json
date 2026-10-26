@@ -1,0 +1,9 @@
+[
+ {"username": "ism.familiya1", "full_name": "Familiya Ism",  "role": "director", "branch": "*",   "smena": "",  "readonly": true, "note": "Katta boshliq — hammasini ko'radi, o'zgartirmaydi"},
+ {"username": "ism.familiya2", "full_name": "Familiya Ism",  "role": "boss",     "branch": "jar", "smena": "",  "perms": "all",  "note": "Filial boshlig'i + barcha ruxsatlar"},
+ {"username": "ism.familiya3", "full_name": "Familiya Ism",  "role": "planner",  "branch": "jar", "smena": ""},
+ {"username": "ism.familiya4", "full_name": "Familiya Ism",  "role": "perixod",  "branch": "jar", "smena": "A"},
+ {"username": "ism.familiya5", "full_name": "Familiya Ism",  "role": "sklad",    "branch": "jar", "smena": "",  "note": "Jar sklad — val qabul"},
+ {"username": "ism.familiya6", "full_name": "Familiya Ism",  "role": "rasxod",   "branch": "jar", "smena": "B"},
+ {"username": "ism.familiya7", "full_name": "Familiya Ism",  "role": "master",   "branch": "jar", "smena": "A"}
+]

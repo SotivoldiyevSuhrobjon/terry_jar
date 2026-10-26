@@ -1,0 +1,15 @@
+.git
+.github
+.idea
+.venv
+venv
+__pycache__
+*.pyc
+.env
+db.sqlite3
+data/
+backups/
+certbot/
+staticfiles/
+.pytest_cache
+.ruff_cache

@@ -1,0 +1,7 @@
+{% extends "core/base_auth.html" %}
+{% block title %}Bloklandi — Terry Jar{% endblock %}
+{% block content %}
+<h1>Kirish vaqtincha bloklandi</h1>
+<div class="err">Parol ko'p marta noto'g'ri kiritildi. 15 daqiqadan keyin qayta urinib ko'ring yoki administratorga murojaat qiling.</div>
+<p class="help"><a href="{% url 'login' %}">Kirish sahifasiga qaytish</a></p>
+{% endblock %}

@@ -1,0 +1,101 @@
+# Terry Jar — server (Aeza VPS) uchun to'liq to'plam.
+# Ishga tushirish: docker compose up -d --build   (batafsil: DEPLOY.md)
+name: terry_jar
+
+x-restart: &restart
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "5" }
+
+services:
+  db:
+    <<: *restart
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-terry}
+      POSTGRES_USER: ${POSTGRES_USER:-terry}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD .env da bo'lishi shart}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    <<: *restart
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "128mb"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  web:
+    <<: *restart
+    build: .
+    image: terry_jar_web:${APP_VERSION:-latest}
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-terry}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-terry}
+      REDIS_URL: redis://redis:6379/0
+      APP_VERSION: ${APP_VERSION:-dev}
+      DATA_DIR: /app/data
+    volumes:
+      - static:/app/staticfiles
+      - appdata:/app/data
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8010}:8000"   # faqat serverning o'zidan (host nginx uchun); tashqaridan yopiq
+
+  # O'z nginx + SSL: alohida server uchun. Serverda nginx allaqachon bo'lsa (boshqa saytlar bilan) —
+  # .env da COMPOSE_PROFILES ni bo'sh qoldiring va DEPLOY.md «Mavjud serverda subdomen» bo'limiga qarang.
+  nginx:
+    <<: *restart
+    profiles: ["proxy"]
+    image: nginx:1.27-alpine
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - static:/static:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on: [web]
+
+  certbot:
+    <<: *restart
+    profiles: ["proxy"]
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done"]
+
+  backup:
+    <<: *restart
+    image: postgres:16-alpine
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER:-terry}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB:-terry}
+      KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      TZ: Asia/Tashkent
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    entrypoint: ["/bin/sh", "/backup.sh", "loop"]
+    depends_on:
+      db: { condition: service_healthy }
+
+volumes:
+  pgdata:
+  static:
+  appdata:

@@ -1,0 +1,15 @@
+{% extends "core/base_auth.html" %}
+{% block title %}Kirish — Terry Jar{% endblock %}
+{% block content %}
+<h1>Tizimga kirish</h1>
+{% if form.errors %}<div class="err">Login yoki parol noto'g'ri. Qaytadan kiriting.</div>{% endif %}
+<form method="post" novalidate>{% csrf_token %}
+ <label for="id_username">Login</label>
+ <input id="id_username" name="username" autocomplete="username" autocapitalize="none" value="{{ form.username.value|default:'' }}" required autofocus>
+ <label for="id_password">Parol</label>
+ <input id="id_password" name="password" type="password" autocomplete="current-password" required>
+ <input type="hidden" name="next" value="{{ next|default:'/app/' }}">
+ <button>Kirish</button>
+</form>
+<p class="help">Parolni unutsangiz administratorga murojaat qiling. 5 marta xato kiritilsa, kirish 15 daqiqaga bloklanadi.</p>
+{% endblock %}

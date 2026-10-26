@@ -1,0 +1,8 @@
+# Windows'da ham shell skriptlar va konfiglar LF bilan qolsin (aks holda Docker konteynerida ishlamaydi)
+* text=auto
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.template text eol=lf
+*.yml text eol=lf
+*.webp binary
+*.png binary

@@ -1,0 +1,60 @@
+name: CI / CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_DB: terry, POSTGRES_USER: terry, POSTGRES_PASSWORD: terry }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U terry" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://terry:terry@localhost:5432/terry
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip, cache-dependency-path: requirements-dev.txt }
+      - run: pip install -r requirements-dev.txt
+      - name: Lint
+        run: ruff check .
+      - name: Migratsiyalar to'liqmi
+        run: python manage.py makemigrations --check --dry-run
+        env: { DJANGO_DEBUG: "1", DJANGO_SECRET_KEY: ci }
+      - name: Xavfsizlik tekshiruvi (production sozlamalari)
+        run: python manage.py check --deploy --fail-level WARNING
+        env: { DJANGO_SECRET_KEY: "${{ github.run_id }}-ci-check-key-that-is-long-enough-for-django-0123456789", DJANGO_ALLOWED_HOSTS: example.uz }
+      - name: Testlar
+        run: pytest
+      - name: Docker obraz yig'iladimi
+        run: docker build -t terry_jar_web:ci .
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Serverga o'rnatish (SSH)
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          HOST: ${{ secrets.SSH_HOST }}
+          PORT: ${{ secrets.SSH_PORT || '22' }}
+          USER: ${{ secrets.SSH_USER }}
+          APP_DIR: ${{ vars.APP_DIR || '/opt/terry_jar' }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -p "$PORT" "$USER@$HOST" "cd '$APP_DIR' && ./scripts/deploy.sh '$GITHUB_SHA'"

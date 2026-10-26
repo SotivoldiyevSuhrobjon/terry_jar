@@ -1,0 +1,14 @@
+# Kompyuterda (PyCharm) ishlab chiqish uchun: faqat PostgreSQL va Redis.
+# docker compose -f docker-compose.dev.yml up -d   so'ng   python manage.py runserver
+name: terry_jar_dev
+services:
+  db:
+    image: postgres:16-alpine
+    environment: { POSTGRES_DB: terry, POSTGRES_USER: terry, POSTGRES_PASSWORD: terry }
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: [devpg:/var/lib/postgresql/data]
+  redis:
+    image: redis:7-alpine
+    ports: ["127.0.0.1:6379:6379"]
+volumes:
+  devpg:

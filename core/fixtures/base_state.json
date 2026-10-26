@@ -1,0 +1,998 @@
+{
+ "v": 16,
+ "rangOneDummy": 0,
+ "cfg": {
+  "overPct": 3,
+  "autoMonth": true,
+  "sz": {
+   "salfetka": [
+    1,
+    2
+   ],
+   "sredni": [
+    3,
+    4
+   ],
+   "banni": [
+    3,
+    4
+   ],
+   "sauna": [
+    3,
+    4
+   ],
+   "polotno": [
+    0,
+    10
+   ]
+  },
+  "dev": 3,
+  "kgDay": 150,
+  "cap": 800,
+  "taraAuto": 13.5,
+  "tola": [
+   "16/1",
+   "21/1",
+   "Krashniy"
+  ],
+  "gl": {
+   "30": 7,
+   "32": 6,
+   "40": 5,
+   "50": 4,
+   "70": 3,
+   "100": 2,
+   "210": 1
+  },
+  "glt": [
+   {
+    "id": "i30",
+    "m": "Itema",
+    "w": 30,
+    "gl": 7
+   },
+   {
+    "id": "i32",
+    "m": "Itema",
+    "w": 32,
+    "gl": 6
+   },
+   {
+    "id": "i40",
+    "m": "Itema",
+    "w": 40,
+    "gl": 5
+   },
+   {
+    "id": "i50",
+    "m": "Itema",
+    "w": 50,
+    "gl": 4
+   },
+   {
+    "id": "i70",
+    "m": "Itema",
+    "w": 70,
+    "gl": 3
+   },
+   {
+    "id": "i100",
+    "m": "Itema",
+    "w": 100,
+    "gl": 2
+   },
+   {
+    "id": "i210",
+    "m": "Itema",
+    "w": 210,
+    "gl": 1
+   },
+   {
+    "id": "k70",
+    "m": "Karetka",
+    "w": 70,
+    "gl": 2
+   },
+   {
+    "id": "k50",
+    "m": "Dornier",
+    "w": 50,
+    "gl": 5
+   }
+  ],
+  "st": {
+   "1": 10,
+   "2": 10,
+   "3": 3,
+   "4": 2,
+   "5": 1.5,
+   "6": 1,
+   "7": 1
+  },
+  "maxLoom": 4,
+  "rxw": {
+   "jar": [
+    "ХУРШЕДБЕК",
+    "КОМИЛЖОН",
+    "АБДУВОХИД",
+    "ИКРОМЖОН"
+   ],
+   "ty": [
+    "ДОНИЁР"
+   ],
+   "shtf": [
+    "ШАХЗОД"
+   ],
+   "uychi": [
+    "БОБУР"
+   ]
+  }
+ },
+ "branches": [
+  {
+   "id": "jar",
+   "name": "Jar",
+   "short": "JR",
+   "dye": true,
+   "sklad": true,
+   "act": true,
+   "rxTo": "jar"
+  },
+  {
+   "id": "ty",
+   "name": "Tuya to'ydi",
+   "short": "TY",
+   "dye": false,
+   "act": true,
+   "rxTo": "ty"
+  },
+  {
+   "id": "shtf",
+   "name": "Shtf",
+   "short": "SH",
+   "dye": false,
+   "act": true,
+   "rxTo": "shtf"
+  },
+  {
+   "id": "uychi",
+   "name": "Uychi",
+   "short": "UY",
+   "dye": false,
+   "act": true,
+   "rxTo": "uychi"
+  }
+ ],
+ "sections": [
+  {
+   "id": "j1",
+   "br": "jar",
+   "name": "101–136",
+   "a": 101,
+   "b": 136
+  },
+  {
+   "id": "j2",
+   "br": "jar",
+   "name": "201–248",
+   "a": 201,
+   "b": 248
+  },
+  {
+   "id": "t1",
+   "br": "ty",
+   "name": "301–310",
+   "a": 301,
+   "b": 310
+  },
+  {
+   "id": "s1",
+   "br": "shtf",
+   "name": "601–608",
+   "a": 601,
+   "b": 608
+  },
+  {
+   "id": "u1",
+   "br": "uychi",
+   "name": "701–708",
+   "a": 701,
+   "b": 708
+  }
+ ],
+ "lm": {
+  "jar:101": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:102": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:103": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:104": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:105": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:106": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:107": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "glN": 14,
+   "glT": "25.10.2026, 12:01"
+  },
+  "jar:108": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:109": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:110": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:111": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:112": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:113": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:114": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:115": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:116": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:117": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:118": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:119": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:120": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:121": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:122": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:123": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:124": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:125": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Dornier"
+  },
+  "jar:126": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Dornier"
+  },
+  "jar:127": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:128": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:129": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:130": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:131": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:132": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:133": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:134": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:135": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:136": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:201": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:202": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:203": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:204": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:205": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:206": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:207": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:208": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:209": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:210": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:211": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:212": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:213": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:214": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:215": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:216": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:217": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:218": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:219": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:220": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:221": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:222": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:223": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:224": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:225": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:226": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:227": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:228": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:229": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:230": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:231": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:232": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:233": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:234": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:235": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:236": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:237": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:238": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:239": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:240": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:241": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:242": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:243": {
+   "type": "sauna",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:244": {
+   "type": "sauna",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:245": {
+   "type": "sauna",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:246": {
+   "type": "sauna",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:247": {
+   "type": "sauna",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "jar:248": {
+   "type": "sauna",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "ty:301": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "ty:302": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "ty:303": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "ty:304": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "ty:305": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "ty:306": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "ty:307": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  },
+  "ty:308": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  },
+  "ty:309": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  },
+  "ty:310": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  },
+  "shtf:601": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "shtf:602": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "shtf:603": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "shtf:604": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "shtf:605": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "shtf:606": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "shtf:607": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "shtf:608": {
+   "type": "sredni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "uychi:701": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "uychi:702": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "uychi:703": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "uychi:704": {
+   "type": "salfetka",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": ""
+  },
+  "uychi:705": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  },
+  "uychi:706": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  },
+  "uychi:707": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  },
+  "uychi:708": {
+   "type": "banni",
+   "des": "",
+   "act": true,
+   "w": "",
+   "gl": "",
+   "model": "Karetka"
+  }
+ },
+ "designs": [],
+ "users": [],
+ "vals": [],
+ "passes": [],
+ "notif": [],
+ "log": [],
+ "weavers": [],
+ "att": {},
+ "brak": [],
+ "months": {},
+ "transfers": []
+}

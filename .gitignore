@@ -1,0 +1,20 @@
+.env
+*.env.local
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.pytest_cache/
+.ruff_cache/
+db.sqlite3
+staticfiles/
+data/
+backups/
+certbot/
+*.log
+
+# xodimlarning haqiqiy ro'yxati — faqat serverda/kompyuterda (public repo)
+core/fixtures/staff.json
+dump.rdb
+*.rdb
