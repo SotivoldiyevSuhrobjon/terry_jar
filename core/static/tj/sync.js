@@ -6,6 +6,7 @@
 (function () {
   'use strict';
   var B = window.TJ_BOOT, K = B.key, ls = window.localStorage;
+  if (B.anon) { anonLogin(B); return; }
   var DESC = {}; (B.desc || []).forEach(function (c) { DESC[c] = 1; });
   var LOCAL = {}; (B.local || []).forEach(function (c) { LOCAL[c] = 1; });
   var SEP = '\u0001';
@@ -546,5 +547,34 @@
   schedule(0);
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('/sw.js').catch(function () {});
+  }
+
+  /* ---------- kirish oynasi (server rejimi): demodagi dizayn, xodimlar ro'yxati va tezkor kirishsiz ---------- */
+  function anonLogin(B) {
+    var e = function (t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    window.renderLogin = function () {
+      try { stop3D('hero'); stop3D('login'); } catch (x) {}
+      var eye = typeof pwBtn === 'function' ? pwBtn('lp') : '';
+      document.getElementById('root').innerHTML =
+        '<div class="login"><canvas id="loginCanvas" aria-hidden="true"></canvas><div class="lpanel">' +
+        '<div class="lbrand"><div class="pl8"><img class="e" src="' + LOGO.emb + '" alt="Terry Jar Textile emblemasi"><img class="w" src="' + LOGO.jar + '" alt="Terry Jar Textile"></div>' +
+        '<p>Jar filiali uchun perixod, rasxod va rangxona hisobi. Har bir xodim faqat o\'z ishini ko\'radi, ruxsatlarni rahbar beradi.</p></div>' +
+        '<form class="lcard" method="post" action="' + e(B.action) + '" onsubmit="this.querySelector(\'button.p\').disabled=true">' +
+        '<h2 style="font-size:20px">Tizimga kirish</h2>' +
+        '<input type="hidden" name="csrfmiddlewaretoken" value="' + e(B.csrf) + '"><input type="hidden" name="next" value="' + e(B.next) + '">' +
+        '<div class="fld"><label class="lbl" for="lu">Login</label><input class="in" id="lu" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required value="' + e(B.username) + '" placeholder="masalan: ism.familiya"></div>' +
+        '<div class="fld"><label class="lbl" for="lp">Parol</label><div class="pwf"><input class="in" id="lp" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">' + eye + '</div></div>' +
+        '<div class="err" id="le" role="alert">' + (B.error ? 'Login yoki parol noto\'g\'ri. Qaytadan kiriting.' : '') + '</div>' +
+        '<button class="btn p" style="justify-content:center;padding:11px">Kirish</button>' +
+        '<div class="m" style="font-size:12px">Parolni unutsangiz administratorga murojaat qiling. 5 marta xato kiritilsa, kirish 15 daqiqaga bloklanadi.</div>' +
+        '</form>' +
+        '<button class="btn ghost" style="color:#fff;align-self:flex-start" onclick="ui.modal={k:\'about\'};renderLogin()">' + ic('info') + ' Dastur haqida</button>' +
+        '</div><div></div></div>' + (ui.modal ? modalHTML() : '');
+      try { mount3D('login', document.getElementById('loginCanvas'), { rolls: 7, cotton: 6 }); } catch (x) {}
+      var h = document.getElementById('tjHide'); if (h) h.remove();
+      var f = document.getElementById(B.username ? 'lp' : 'lu'); if (f && !ui.modal) f.focus();
+    };
+    window.logout = function () { location.href = B.next || '/app/'; };
+    try { me = null; ui.modal = null; renderLogin(); } catch (x) { console.error(x); }
   }
 })();

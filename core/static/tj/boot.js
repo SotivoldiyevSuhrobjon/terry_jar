@@ -5,6 +5,17 @@
 (function () {
   'use strict';
   var B = window.TJ_BOOT, K = B.key, ls = window.localStorage;
+  if (B.anon) {
+    // Kirish sahifasi: demo faqat oynani chizadi. Qurilmadagi ma'lumot va navbatga (outbox) tegilmaydi —
+    // demo yaratadigan namunaviy holat faqat xotirada qoladi.
+    var g0 = Storage.prototype.getItem, s0 = Storage.prototype.setItem;
+    var guard = function (k) { return this === ls && (k === K || k === K + '_ui'); };
+    Storage.prototype.getItem = function (k) { return guard.call(this, k) ? null : g0.call(this, k); };
+    Storage.prototype.setItem = function (k, v) { if (!guard.call(this, k)) s0.call(this, k, v); };
+    // demo o'zining (namunaviy xodimlar ro'yxatli) kirish oynasini chizib ulgurmasin
+    document.write('<style id="tjHide">#root{visibility:hidden}</style>');
+    return;
+  }
   function get(k, d) { try { var v = ls.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
   function set(k, v) { try { Storage.prototype.setItem.call(ls, k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 

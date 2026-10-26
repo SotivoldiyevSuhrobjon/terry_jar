@@ -80,13 +80,18 @@ def app_view(request):
         "version": settings.APP_VERSION,
     }
     request.session["tj_in"] = 1
+    return _front_page(f, boot)
+
+
+def _front_page(f, boot, status=200):
+    """Demo HTML + ulanish skriptlari (boot.js oldidan, sync.js oxirida)."""
     static = settings.STATIC_URL
     ver = settings.APP_VERSION
     head_inject = (f'\n<script>window.TJ_BOOT={_json_script(boot)};</script>'
                    f'\n<script src="{static}tj/boot.js?v={ver}"></script>\n')
     tail_inject = f'<script src="{static}tj/sync.js?v={ver}"></script>\n'
     html = f.head + head_inject + f.mid + tail_inject + f.tail
-    resp = HttpResponse(html, content_type="text/html; charset=utf-8")
+    resp = HttpResponse(html, content_type="text/html; charset=utf-8", status=status)
     resp["Cache-Control"] = "no-store"
     return resp
 
@@ -173,6 +178,23 @@ class LoginView(auth_views.LoginView):
 
     def get_context_data(self, **kw):
         return {**super().get_context_data(**kw), "version": version_label()}
+
+    def render_to_response(self, context, **kw):
+        # Demo bilan bir xil kirish oynasi (3D fon, logo). Demo fayli bo'lmasa — oddiy Django shabloni.
+        try:
+            f = _Front.load()
+        except OSError:
+            return super().render_to_response(context, **kw)
+        from django.middleware.csrf import get_token
+        form = context.get("form")
+        boot = {
+            "anon": True, "key": f.key, "v": f.ver, "csrf": get_token(self.request),
+            "action": self.request.get_full_path(), "next": self.get_redirect_url() or reverse("app"),
+            "error": bool(form is not None and form.errors),
+            "username": (form.data.get("username", "") if form is not None and form.is_bound else "")[:150],
+            "version": settings.APP_VERSION,
+        }
+        return _front_page(f, boot, status=200)
 
 
 class PasswordChangeView(auth_views.PasswordChangeView):
