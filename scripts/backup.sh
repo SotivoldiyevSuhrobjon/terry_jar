@@ -1,5 +1,5 @@
 #!/bin/sh
-# Ma'lumotlar bazasining zaxira nusxasi: har kuni 02:30 da ./backups/ ga, KEEP_DAYS kundan eskisi o'chiriladi.
+# Maʼlumotlar bazasining zaxira nusxasi: har kuni 02:30 da ./backups/ ga, KEEP_DAYS kundan eskisi oʼchiriladi.
 #   sh backup.sh once  — hozir bitta nusxa
 #   sh backup.sh loop  — konteyner ichida har kuni
 set -eu
