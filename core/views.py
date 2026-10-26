@@ -4,16 +4,20 @@ import threading
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_POST
 
 from . import sync
-from .models import Record
+from .models import AuditLog, Record
+from .signals import session_tag
 
 
 # ---------------------------------------------------------------- frontend (demo HTML o'zgarmasdan)
@@ -184,6 +188,69 @@ def api_push(request):
     except (ValueError, sync.PushError) as e:
         return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse(res, json_dumps_params={"ensure_ascii": False})
+
+
+# ---------------------------------------------------------------- Profilim
+@require_GET
+@never_cache
+def api_me_logins(request):
+    err = _api_auth(request)
+    if err:
+        return err
+    me_tag = session_tag(request.session.session_key)
+    rows = []
+    for a in AuditLog.objects.filter(user=request.user, action__in=("login", "logout")).order_by("-ts")[:15]:
+        dev, _, tag = (a.note or "").partition("|")
+        rows.append({"t": timezone.localtime(a.ts).strftime("%d.%m.%Y %H:%M"), "a": a.action, "ip": a.ip or "",
+                     "dev": dev, "cur": bool(tag and tag == me_tag)})
+    return JsonResponse({"logins": rows}, json_dumps_params={"ensure_ascii": False})
+
+
+@require_POST
+def api_me_password(request):
+    err = _api_auth(request)
+    if err:
+        return err
+    try:
+        body = json.loads(request.body or b"{}")
+    except ValueError:
+        return JsonResponse({"ok": False, "error": "Noto'g'ri so'rov"}, status=400)
+    form = PasswordChangeForm(request.user, data={"old_password": body.get("old", ""),
+                                                  "new_password1": body.get("new1", ""),
+                                                  "new_password2": body.get("new2", "")})
+    if not form.is_valid():
+        if "old_password" in form.errors:
+            msg = "Hozirgi parol noto'g'ri"
+        else:
+            msg = " ".join(str(e) for errs in form.errors.values() for e in errs)
+        return JsonResponse({"ok": False, "error": msg})
+    user = form.save()
+    user.must_change_password = False
+    user.save(update_fields=["must_change_password"])
+    update_session_auth_hash(request, user)
+    AuditLog.objects.create(user=user, username=user.username, action="update", col="users", rid=user.rid,
+                            note="o'z parolini almashtirdi (Profilim)")
+    return JsonResponse({"ok": True})
+
+
+@require_POST
+def api_me_logout_others(request):
+    err = _api_auth(request)
+    if err:
+        return err
+    from django.contrib.sessions.models import Session
+    uid, cur, n = str(request.user.pk), request.session.session_key, 0
+    for s in Session.objects.filter(expire_date__gt=timezone.now()).exclude(session_key=cur).iterator():
+        try:
+            data = s.get_decoded()
+        except Exception:  # buzilgan sessiya
+            continue
+        if data.get("_auth_user_id") == uid:
+            s.delete()
+            n += 1
+    AuditLog.objects.create(user=request.user, username=request.user.username, action="logout",
+                            note=f"boshqa qurilmalardan chiqarildi: {n}")
+    return JsonResponse({"ok": True, "n": n})
 
 
 def healthz(request):

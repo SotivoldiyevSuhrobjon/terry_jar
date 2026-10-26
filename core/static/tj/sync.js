@@ -132,6 +132,16 @@
       return r.json();
     });
   }
+  // Profilim uchun: /api/me/... (kirishlar, parol, boshqa qurilmalardan chiqish)
+  TJ.meApi = function (path, body) {
+    var opt = { credentials: 'same-origin', headers: { 'Accept': 'application/json' } };
+    if (body) { opt.method = 'POST'; opt.headers['Content-Type'] = 'application/json'; opt.headers['X-CSRFToken'] = B.csrf; opt.body = JSON.stringify(body); }
+    return fetch('/api/me/' + path, opt).then(function (r) {
+      if (r.status === 401) { location.href = B.login + '?next=/app/'; throw new Error('login'); }
+      if (!r.ok && r.status !== 400) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  };
   function setDown(v) {
     if (TJ.down === v) return;
     if (v) TJ.downAt = new Date();
