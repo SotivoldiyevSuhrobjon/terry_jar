@@ -14,6 +14,7 @@ urlpatterns = [
     path("", RedirectView.as_view(pattern_name="app", permanent=False)),
     path("app/", views.app_view, name="app"),
     path("sw.js", views.service_worker, name="sw"),
+    path("manifest.webmanifest", views.manifest, name="manifest"),
     path("healthz", views.healthz, name="healthz"),
     path("api/sync/state", views.api_state, name="api_state"),
     path("api/sync/pull", views.api_pull, name="api_pull"),

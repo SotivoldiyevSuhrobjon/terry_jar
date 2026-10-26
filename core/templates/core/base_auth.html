@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{% block title %}Terry Jar{% endblock %}</title>
-<link rel="icon" href="{% static 'tj/emb.webp' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'tj/favicon-32.png' %}">
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#1b2190">
+<link rel="apple-touch-icon" href="{% static 'tj/icon-180.png' %}">
 <style>
 :root{--bg:#f3f4f8;--surface:#fff;--ink:#14172b;--muted:#5b6078;--line:#dde0ea;--navy:#1b2190;--bad:#c62828;--badbg:#fdecec;--ok:#1a7f4b;--okbg:#e7f6ee}
 @media (prefers-color-scheme:dark){:root{--bg:#0f1220;--surface:#181c2e;--ink:#eef0f8;--muted:#a3a8c2;--line:#2a3048;--navy:#8d93ff;--badbg:#3a1518;--okbg:#12301f}}

@@ -87,12 +87,42 @@ def _front_page(f, boot, status=200):
     """Demo HTML + ulanish skriptlari (boot.js oldidan, sync.js oxirida)."""
     static = settings.STATIC_URL
     ver = settings.APP_VERSION
-    head_inject = (f'\n<script>window.TJ_BOOT={_json_script(boot)};</script>'
+    head_inject = (f'\n{PWA_HEAD}'
+                   f'\n<script>window.TJ_BOOT={_json_script(boot)};</script>'
                    f'\n<script src="{static}tj/boot.js?v={ver}"></script>\n')
     tail_inject = f'<script src="{static}tj/sync.js?v={ver}"></script>\n'
     html = f.head + head_inject + f.mid + tail_inject + f.tail
     resp = HttpResponse(html, content_type="text/html; charset=utf-8", status=status)
     resp["Cache-Control"] = "no-store"
+    return resp
+
+
+PWA_HEAD = ('<link rel="manifest" href="/manifest.webmanifest">'
+            '<meta name="theme-color" content="#1b2190">'
+            '<meta name="mobile-web-app-capable" content="yes">'
+            '<meta name="apple-mobile-web-app-capable" content="yes">'
+            '<meta name="apple-mobile-web-app-title" content="Terry Jar">'
+            '<link rel="apple-touch-icon" href="/static/tj/icon-180.png">'
+            '<link rel="icon" type="image/png" sizes="32x32" href="/static/tj/favicon-32.png">')
+
+
+def manifest(request):
+    """Ilova sifatida o'rnatish (PWA): Chrome/Edge manzil satrida «O'rnatish», telefonda «Bosh ekranga qo'shish»."""
+    s = settings.STATIC_URL + "tj/"
+    data = {
+        "id": "/app/", "name": "Terry Jar — ishlab chiqarish hisobi", "short_name": "Terry Jar",
+        "description": "Perixod, rasxod, Jar sklad, rangxona, grafik va nomenklatura",
+        "start_url": "/app/", "scope": "/", "display": "standalone", "orientation": "any",
+        "background_color": "#121a6b", "theme_color": "#1b2190", "lang": "uz",
+        "icons": [
+            {"src": s + "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+            {"src": s + "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+            {"src": s + "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+        ],
+    }
+    resp = JsonResponse(data, json_dumps_params={"ensure_ascii": False})
+    resp["Content-Type"] = "application/manifest+json"
+    resp["Cache-Control"] = "public, max-age=3600"
     return resp
 
 

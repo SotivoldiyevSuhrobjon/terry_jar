@@ -6,6 +6,7 @@
 (function () {
   'use strict';
   var B = window.TJ_BOOT, K = B.key, ls = window.localStorage;
+  installSetup(B);
   if (B.anon) { anonLogin(B); return; }
   var DESC = {}; (B.desc || []).forEach(function (c) { DESC[c] = 1; });
   var LOCAL = {}; (B.local || []).forEach(function (c) { LOCAL[c] = 1; });
@@ -545,9 +546,6 @@
   if (B.fresh && typeof me !== 'undefined' && me) { try { logA('Tizimga kirdi'); checkAll(); save(); render(); } catch (e) {} }
   connectWS();
   schedule(0);
-  if ('serviceWorker' in navigator && location.protocol === 'https:') {
-    navigator.serviceWorker.register('/sw.js').catch(function () {});
-  }
 
   /* ---------- kirish oynasi (server rejimi): demodagi dizayn, xodimlar ro'yxati va tezkor kirishsiz ---------- */
   function anonLogin(B) {
@@ -576,5 +574,38 @@
     };
     window.logout = function () { location.href = B.next || '/app/'; };
     try { me = null; ui.modal = null; renderLogin(); } catch (x) { console.error(x); }
+  }
+
+  /* ---------- ilova sifatida o'rnatish (PWA) ---------- */
+  function installSetup(B) {
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    }
+    var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+    if (standalone) return;
+    var KEYD = 'tjInstallHide', hidden = false;
+    try { hidden = +localStorage.getItem(KEYD) > Date.now(); } catch (e) {}
+    var deferred = null;
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios|edgios/i.test(navigator.userAgent);
+    function chip() {
+      if (hidden || document.getElementById('tjInstall')) return;
+      var d = document.createElement('div'); d.id = 'tjInstall';
+      d.style.cssText = 'position:fixed;left:14px;bottom:14px;z-index:89;display:flex;align-items:center;gap:2px;background:#1b2190;color:#fff;border-radius:999px;box-shadow:0 10px 24px -8px rgba(0,0,0,.5);font:600 13px/1 system-ui,sans-serif';
+      d.innerHTML = '<button type="button" style="all:unset;cursor:pointer;padding:10px 6px 10px 14px">📲 Ilovani o\'rnatish</button>' +
+        '<button type="button" aria-label="Yopish" title="30 kun ko\'rsatilmasin" style="all:unset;cursor:pointer;padding:10px 12px 10px 6px;opacity:.75">✕</button>';
+      d.children[0].onclick = function () {
+        if (deferred) {
+          deferred.prompt();
+          deferred.userChoice.then(function (r) { if (r.outcome === 'accepted') d.remove(); deferred = null; });
+        } else if (ios) {
+          toast('iPhone/iPad: Safari pastidagi «Ulashish» (⬆) → «На экран Домой / Bosh ekranga qo\'shish»');
+        }
+      };
+      d.children[1].onclick = function () { try { localStorage.setItem(KEYD, String(Date.now() + 30 * 864e5)); } catch (e) {} d.remove(); };
+      document.body.appendChild(d);
+    }
+    window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; chip(); });
+    window.addEventListener('appinstalled', function () { var d = document.getElementById('tjInstall'); if (d) d.remove(); toast('Terry Jar ilova sifatida o\'rnatildi'); });
+    if (ios) setTimeout(chip, 1500);
   }
 })();

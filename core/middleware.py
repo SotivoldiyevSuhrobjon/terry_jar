@@ -11,7 +11,8 @@ class ForcePasswordChangeMiddleware:
     def __call__(self, request):
         u = getattr(request, "user", None)
         if u and u.is_authenticated and u.must_change_password:
-            allowed = (reverse("password_change"), reverse("logout"), "/static/", "/healthz")
+            allowed = (reverse("password_change"), reverse("logout"), "/static/", "/healthz", "/manifest.webmanifest",
+                       "/sw.js")
             if not request.path.startswith(allowed):
                 if request.path.startswith("/api/"):
                     from django.http import JsonResponse

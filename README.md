@@ -32,6 +32,9 @@ nginx (SSL, statik fayllar, limitlar) ──► Django 5.2 + Channels (uvicorn, 
   xodimlar, filiallar, bo'lim ruxsatlari faqat tegishli huquq bilan; o'zidan yuqori lavozim berib bo'lmaydi.
 - **Audit:** kim, qachon, nimani, oldin va keyin qanday edi — hammasi `AuditLog` da (admin panelda).
 - Parollar faqat hash ko'rinishida (PBKDF2). 5 marta xato parol → 15 daqiqa blok (django-axes).
+- **Ilova sifatida o'rnatish (PWA):** Chrome/Edge'da manzil satrida «O'rnatish» belgisi va sahifada «📲 Ilovani o'rnatish»
+  tugmasi; Android'da «Bosh ekranga qo'shish»; iPhone'da Safari → «Ulashish» → «На экран Домой». O'rnatilgan ilova
+  alohida oynada, o'z ikonkasi bilan ochiladi. Login formasi brauzerning «parolni saqlash» taklifi bilan ishlaydi.
 - **Internet yoki server uzilsa** — 15 soniya ichida o'zi «Offline»ga o'tadi, sahifa tepasida qizil ogohlantirish chiqadi,
   ish to'xtamaydi (vallar kompyuterda saqlanadi). Aloqa tiklansa o'zi yuboradi va «Online»ga qaytadi.
 - **«Online / Offline» belgisi bosilsa** — «Server bilan aloqa» oynasi: navbat, oxirgi aloqa vaqti, «Hozir yuborish»,
