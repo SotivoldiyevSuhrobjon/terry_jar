@@ -18,6 +18,7 @@ def test_app_page_wraps_demo(client, state, mk):
     r = client.get("/app/")
     html = r.content.decode()
     assert r.status_code == 200
+    assert "no-store" in r["Cache-Control"]  # eski sahifa keshdan chiqib, yangi skriptlar bilan to'qnashmasin
     assert "window.TJ_BOOT=" in html and "/static/tj/boot.js" in html and "/static/tj/sync.js" in html
     assert html.index("boot.js") < html.index("const KEY=")  # boot demo skriptidan oldin
     assert html.index("const KEY=") < html.index("sync.js")

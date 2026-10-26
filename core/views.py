@@ -127,7 +127,9 @@ def manifest(request):
     }
     resp = JsonResponse(data, json_dumps_params={"ensure_ascii": False})
     resp["Content-Type"] = "application/manifest+json"
-    resp["Cache-Control"] = "public, max-age=3600"
+    # Sahifada xodimning ma'lumotlari bor va har yangilanishda skript versiyasi o'zgaradi:
+    # brauzer har safar serverdan yangisini olsin (oflaynda service worker zaxira nusxani beradi)
+    resp["Cache-Control"] = "no-store"
     return resp
 
 
