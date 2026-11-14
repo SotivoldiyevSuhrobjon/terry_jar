@@ -143,7 +143,8 @@ Qo'lda o'rnatish: `cd /opt/terry_jar && ./scripts/deploy.sh`.
 
 ## 7. Zaxira nusxa
 
-- Har kuni 02:30 → `/opt/terry_jar/backups/terry_YYYY-MM-DD_HHMM.sql.gz`, 14 kundan eskisi o'chadi.
+- Kuniga 4 marta (02:30, 08:30, 14:30, 20:30; `.env` da `BACKUP_TIMES`) → `/opt/terry_jar/backups/terry_YYYY-MM-DD_HHMM.sql.gz`, 14 kundan eskisi o'chadi.
+  Telegram sozlangan bo'lsa, har nusxa kanalga ham ketadi (server yo'qolsa ko'pi bilan 6 soatlik ma'lumot; qolganini xodimlar navbati/papkasi to'ldiradi).
 - Har o'rnatishdan oldin ham alohida nusxa olinadi.
 - Hozir qo'lda: `docker compose run --rm --entrypoint sh backup /backup.sh once`
 - **Tiklash:** `./scripts/restore.sh backups/terry_2026-10-25_0230.sql.gz` (eski baza `_old` nomi bilan qoladi).
@@ -179,9 +180,35 @@ Telegram'dan olingan `.enc` faylni tiklash: `./scripts/restore.sh terry_SANA.sql
 ## 8. Kuzatish
 
 - Holat: `docker compose ps`, loglar: `docker compose logs -f web` (nginx: `... logs -f nginx`).
-- Tashqi kuzatuv: UptimeRobot yoki Uptime Kuma → `https://DOMEN/healthz` (server yoki baza to'xtasa xabar beradi).
+- Tashqi kuzatuv (server o'zini o'zi kuzata olmaydi — tashqaridan tekshirish kerak):
+  1. **GitHub Actions** (`.github/workflows/uptime.yml`, tayyor): repo → Settings → Secrets and variables → Actions →
+     Variables: `HEALTH_URL` = `https://DOMEN/healthz`; Secrets: `TELEGRAM_ALERT_BOT_TOKEN`, `TELEGRAM_ALERT_CHAT_ID`
+     (alohida bot yoki zaxiradagi bot, boshqa guruh bo'lgani ma'qul). Har ~5 daqiqada tekshiradi; javob bo'lmasa Telegram'ga xabar.
+  2. **UptimeRobot** (bepul, 5 daqiqa, SMS/Telegram/email) → `https://DOMEN/healthz`, kalit so'z `"ok": true`. Ikkalasini qo'ying.
 - Disk: `df -h`, zaxiralar hajmi: `du -sh backups`.
 - Bloklangan login: `docker compose exec web python manage.py axes_reset`.
+
+## 8B. Avariya (server o'chdi / buzildi)
+
+Xodimlar ish to'xtatmaydi: dastur Offline rejimida vallarni qurilmada va `perixod_fayllari/` papkasida saqlaydi.
+Hammasi qaytgach navbat o'zi yuboriladi. Sahifa ochiq bo'lmasa ham, ilova qobig'i keshdan ochiladi (502/503 da ham).
+
+**A. Server tirik, lekin ilova yo'q** (Telegram xabari keldi):
+```bash
+ssh deploy@SERVER; cd /opt/terry_jar
+docker compose ps; docker compose logs --tail=100 web
+docker compose up -d                 # odatda shu yetadi
+```
+**B. Server butunlay yo'qoldi / provayderda uzoq muammo** (maqsad: 30 daqiqada yangi serverda):
+1. Boshqa provayderdan yangi VPS oling, `DEPLOY.md` 1–4 bo'limlar (`server-install.sh`), eski `.env` ni qo'ying
+   (`.env` nusxasi alohida joyda — parol menejerida — saqlansin!).
+2. Telegram kanaldan oxirgi `terry_*.sql.gz.enc` ni yuklab oling, `docker compose up -d db redis`, so'ng
+   `./scripts/restore.sh terry_SANA.sql.gz.enc`, `docker compose up -d`.
+3. Domen DNS A yozuvini yangi IP ga o'zgartiring (TTL oldindan 300 soniya qilib qo'yilsin), `init-ssl.sh` bilan SSL.
+4. Xodimlar: Online belgisini tekshirsin. Oxirgi zaxiradan keyingi vallar navbatdan o'zi yetib boradi; yetmagan bo'lsa —
+   Online/Offline belgisi → «Papkadagi yuborilmaganlarni yuborish» (papkadagi `yuborilgan/` ham qayta yuboriladi).
+
+**Har oyda bir marta sinab ko'ring:** zaxirani boshqa joyda tiklash (restore) ishlashini tekshiring — sinalmagan zaxira zaxira emas.
 
 ## 9. Muhim eslatmalar
 

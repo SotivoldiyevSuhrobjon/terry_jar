@@ -17,9 +17,10 @@ self.addEventListener('fetch', e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== 'GET' || u.pathname.startsWith('/api/') || u.pathname.startsWith('/ws/')) return;
   if (u.pathname === '/app/') {
-    // tarmoq birinchi; uzilgan bo'lsa oxirgi ochilgan sahifa
+    // tarmoq birinchi; uzilgan yoki server xato (502/503/504 — texnik ishlar, qayta ishga tushish) bersa oxirgi ochilgan sahifa
     e.respondWith(fetch(r).then(res => {
-      if (res.ok && res.url.endsWith('/app/')) { const cp = res.clone(); caches.open(CACHE).then(c => c.put('/app/', cp)); }
+      if (res.ok && res.url.endsWith('/app/')) { const cp = res.clone(); caches.open(CACHE).then(c => c.put('/app/', cp)); return res; }
+      if (res.status >= 500) return caches.match('/app/').then(hit => hit || res);
       return res;
     }).catch(() => caches.match('/app/')));
     return;

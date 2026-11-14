@@ -171,7 +171,7 @@
     }
     document.body.classList.add('tj-off');
     bar.textContent = (TJ.userSim ? 'OFLAYN SINOV — ' : 'INTERNET / SERVER ALOQASI YO\'Q — ') +
-      'ishlashda davom eting: kiritganlar shu kompyuterda saqlanmoqda' + (q ? ' (' + q + ' ta o\'zgarish navbatda)' : '') +
+      'ishlashda davom eting: kiritganlar shu kompyuterda saqlanmoqda' + (q ? ' (' + queueTxt() + ' navbatda)' : '') +
       ', aloqa tiklanganda o\'zi yuboriladi.';
     try { nagRefresh(); topLayout(); } catch (e) {}
   }
@@ -324,13 +324,20 @@
   }
   window.toggleSim = function () { openPanel(); };
   function queueCount() { return TJ.outbox.reduce(function (a, o) { return a + o.ch.length; }, 0); }
+  // foydalanuvchiga tushunarli sanoq: nechta val kiritilgan (bitta valdan bir nechta yozuv — jurnal, sklad va h.k. — hosil bo'ladi)
+  function queueTxt() {
+    var q = queueCount(), s = {};
+    TJ.outbox.forEach(function (o) { o.ch.forEach(function (c) { if (c.c === 'vals' && c.d) s[c.id] = 1; }); });
+    var v = Object.keys(s).length;
+    return v ? v + ' ta val (' + q + ' yozuv)' : q + ' ta o\'zgarish';
+  }
   window.netPill = function () {
     var q = queueCount(), fsW = FS.need ? ' ⚠' : '';
     if (isOff()) {
       var why = TJ.userSim ? ' (sinov)' : '';
-      return '<button class="pill bad net" onclick="TJ.panel()" title="Server bilan aloqa yo\'q — o\'zgarishlar qurilmada saqlanmoqda. Batafsil uchun bosing">● Offline' + why + (q ? ' · ' + q + ' ta o\'zgarish navbatda' : '') + fsW + '</button>';
+      return '<button class="pill bad net" onclick="TJ.panel()" title="Server bilan aloqa yo\'q — o\'zgarishlar qurilmada saqlanmoqda. Batafsil uchun bosing">● Offline' + why + (q ? ' · ' + queueTxt() + ' navbatda' : '') + fsW + '</button>';
     }
-    return '<button class="pill ok net" onclick="TJ.panel()" title="Server bilan ulangan' + (TJ.wsOk ? ', real vaqt' : '') + '. Batafsil uchun bosing">● Online' + (q ? ' · ' + q + ' yuborilmoqda' : '') + fsW + '</button>';
+    return '<button class="pill ok net" onclick="TJ.panel()" title="Server bilan ulangan' + (TJ.wsOk ? ', real vaqt' : '') + '. Batafsil uchun bosing">● Online' + (q ? ' · ' + queueTxt() + ' yuborilmoqda' : '') + fsW + '</button>';
   };
 
   /* ---------- sinxronlash holati paneli ---------- */
@@ -483,7 +490,7 @@
   }
   /* ish boshida papka ulanmagan bo'lsa — tepada sariq eslatma (perixod, rasxod, sklad) */
   var NAG_ROLES = { perixod: 1, rasxod: 1, sklad: 1 };
-  TJ.nagLater = function () { TJ.nagUntil = Date.now() + 3600e3; nagRefresh(); setTimeout(nagRefresh, 3600e3 + 1000); };
+  TJ.nagLater = function () { TJ.nagUntil = Date.now() + 900e3; nagRefresh(); setTimeout(nagRefresh, 900e3 + 1000); };
   function nagRefresh() {
     var el = document.getElementById('tjNag');
     var need = NAG_ROLES[B.role] && FS.supported && FS.checked && !FS.ok && !(TJ.nagUntil > Date.now());

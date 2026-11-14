@@ -1,0 +1,36 @@
+name: Uptime (server tirikligini tekshirish)
+
+# Har ~5 daqiqada https://DOMEN/healthz ni tekshiradi; javob bermasa Telegram'ga xabar yuboradi.
+# Sozlash (repo → Settings → Secrets and variables → Actions):
+#   Variables: HEALTH_URL  = https://DOMEN/healthz
+#   Secrets:   TELEGRAM_ALERT_BOT_TOKEN, TELEGRAM_ALERT_CHAT_ID
+# Eslatma: GitHub jadvali kechikishi mumkin (5–15 daqiqa) — shuning uchun UptimeRobot ham qo'yish tavsiya etiladi.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    if: vars.HEALTH_URL != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: /healthz
+        env:
+          URL: ${{ vars.HEALTH_URL }}
+          TOKEN: ${{ secrets.TELEGRAM_ALERT_BOT_TOKEN }}
+          CHAT: ${{ secrets.TELEGRAM_ALERT_CHAT_ID }}
+        run: |
+          for i in 1 2 3; do
+            if curl -fsS --max-time 15 "$URL" | grep -q '"ok": *true'; then echo "OK"; exit 0; fi
+            sleep 20
+          done
+          echo "SERVER JAVOB BERMAYAPTI: $URL"
+          if [ -n "$TOKEN" ] && [ -n "$CHAT" ]; then
+            curl -fsS --max-time 20 "https://api.telegram.org/bot$TOKEN/sendMessage" \
+              --data-urlencode "chat_id=$CHAT" \
+              --data-urlencode "text=⚠️ Terry Jar serveri javob bermayapti ($(date -u '+%H:%M UTC')). Xodimlar Offline rejimda ishlayapti — DEPLOY.md «Avariya» bo'limiga qarang." >/dev/null || true
+          fi
+          exit 1

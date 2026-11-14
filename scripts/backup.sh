@@ -1,5 +1,5 @@
 #!/bin/sh
-# Maʼlumotlar bazasining zaxira nusxasi: har kuni 02:30 da ./backups/ ga, KEEP_DAYS kundan eskisi oʼchiriladi.
+# Maʼlumotlar bazasining zaxira nusxasi: kuniga 4 marta (BACKUP_TIMES, standart 02:30 08:30 14:30 20:30) ./backups/ ga, KEEP_DAYS kundan eskisi oʼchiriladi.
 # TELEGRAM_BOT_TOKEN va TELEGRAM_CHAT_ID berilsa — nusxa Telegram (yopiq kanal/guruh) ga ham yuboriladi;
 # BACKUP_PASSPHRASE berilsa — yuborishdan oldin AES-256 bilan shifrlanadi (.enc).
 #   sh backup.sh once  — hozir bitta nusxa (+ Telegram)
@@ -49,8 +49,14 @@ dump() {
 
 if [ "${1:-once}" = "once" ]; then dump; exit 0; fi
 while :; do
-  now=$(date +%s); target=$(date -d "$(date +%F) 02:30" +%s 2>/dev/null || echo $((now + 86400)))
-  [ "$target" -le "$now" ] && target=$((target + 86400))
-  sleep $((target - now))
+  # BACKUP_TIMES (masalan "02:30 08:30 14:30 20:30") — eng yaqin keyingi vaqtgacha kutadi
+  now=$(date +%s); best=""
+  for t in ${BACKUP_TIMES:-02:30 08:30 14:30 20:30}; do
+    tg=$(date -d "$(date +%F) $t" +%s 2>/dev/null) || continue
+    [ "$tg" -le "$now" ] && tg=$((tg + 86400))
+    if [ -z "$best" ] || [ "$tg" -lt "$best" ]; then best=$tg; fi
+  done
+  [ -n "$best" ] || best=$((now + 21600))
+  sleep $((best - now))
   dump || echo "zaxira XATO"
 done
